@@ -1350,6 +1350,9 @@ ruby rt {
     height: auto;
     min-height: 100vh;
     overflow-y: auto;
+    /* 顶栏按钮在窄屏会换行，第一行不能用固定 50px，否则换行后的按钮
+       会溢出到第 2 行（公告条）上、把按钮盖住。改为自适应高度。 */
+    grid-template-rows: auto 23px minmax(0, 1fr);
   }
 
   .retro-brand-bar--fusion,
