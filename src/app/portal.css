@@ -1,0 +1,1393 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   KanaLens — 2001 Chinese web-portal skin (single stylesheet, single skin)
+   Dense, hard-bordered, blue links, loud banners, old-style web controls.
+   No dark mode. No !important. One intentional cascade.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap");
+@import "tailwindcss";
+
+/* ── Portal palette ──────────────────────────────────────────────────── */
+:root {
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+
+  /* surfaces — a white web page, not a grey OS desktop */
+  --bg-primary: #ffffff;        /* white page */
+  --bg-panel: #ffffff;          /* white content panel */
+  --bg-panel-raised: #fbfbf3;   /* faint cream raised panel */
+  --bg-panel-inset: #ffffff;
+  --page-edge: #f3f3f3;         /* thin gutter around the page body */
+
+  /* ink */
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --text-inverse: #ffffff;
+  --bg-inverse: #000000;
+
+  /* accents — blue link, red shout, yellow highlight */
+  --link-blue: #0000cc;
+  --link-visited: #551a8b;
+  --accent: #0000cc;
+  --accent-hover: #cc0000;
+  --shout-red: #cc0000;
+  --highlight-yellow: #fff6b0;
+  --title-blue: #1c5fc0;
+
+  /* top navigation bar (the loud solid portal strip) */
+  --nav-bar-1: #2f7ad6;
+  --nav-bar-2: #1850a6;
+  --nav-bar-text: #ffffff;
+
+  /* section header gradients (green / orange / blue / cyan strips) */
+  --bar-green-1: #a6e000;
+  --bar-green-2: #5fb800;
+  --bar-orange-1: #ffce5a;
+  --bar-orange-2: #ff9000;
+  --bar-blue-1: #5aa6ef;
+  --bar-blue-2: #1c5fc0;
+  --bar-cyan-1: #bff3ff;
+  --bar-cyan-2: #62c6d8;
+
+  /* thin web borders + classic control bevels */
+  --border-primary: #9fb0c2;   /* soft blue-grey table border */
+  --border-soft: #d4dde6;
+  --border-strong: #6f8298;
+  --bevel-light: #ffffff;
+  --bevel-face: #ece9d8;        /* classic form-control face */
+  --bevel-shadow: #808080;
+  --bevel-darkshadow: #404040;
+
+  /* LED / meter readouts */
+  --led-green: #00aa00;
+  --led-amber: #cc8800;
+  --led-red: #cc0000;
+  --lcd-bg: #eef7d6;
+  --lcd-fg: #1a4a1a;
+  --lcd-dim: #666666;
+
+  --overlay-bg: rgba(0, 0, 0, 0.45);
+  --focus-ring-color: #0000cc;
+}
+
+/* ── Tailwind theme bridge — keeps utility classes (text-sumi, text-indigo,
+   bg-panel-strong, border-line …) working, now painted portal-style. ──── */
+@theme inline {
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+  --color-washi: var(--bg-primary);
+  --color-panel: var(--bg-panel);
+  --color-panel-strong: var(--bg-panel-raised);
+  --color-panel-inset: var(--bg-panel-inset);
+  --color-sumi: var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-muted: var(--text-muted);
+  --color-line: var(--border-primary);
+  --color-softline: var(--border-soft);
+  --color-strong: var(--border-strong);
+  --color-focus: var(--focus-ring-color);
+  --color-inverse: var(--text-inverse);
+  --color-indigo: var(--link-blue);
+  --color-indigo-glow: var(--shout-red);
+  --color-rose: var(--shout-red);
+  --font-sans: SimSun, "MS Sans Serif", "MS PGothic", "Noto Sans JP", sans-serif;
+  --font-serif: "MS Mincho", "Yu Mincho", SimSun, "Noto Sans JP", serif;
+  --font-mono: "Courier New", Consolas, monospace;
+  --font-japanese: "MS Mincho", "Yu Mincho", SimSun, "Noto Sans JP", serif;
+}
+
+/* ── Reset / base ────────────────────────────────────────────────────── */
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  -webkit-font-smoothing: auto;
+}
+
+* {
+  border-color: var(--border-primary);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: var(--link-blue);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: var(--shout-red);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus-ring-color);
+  outline-offset: 1px;
+}
+
+ruby {
+  font-family: var(--font-japanese);
+}
+
+ruby rt {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bevel-face);
+  border: 1px solid var(--bevel-shadow);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bevel-face);
+  border: 2px outset var(--bevel-light);
+}
+
+::selection {
+  background: var(--title-blue);
+  color: #fff;
+}
+
+/* unused decorative substrate from the old skin — kept inert */
+.vestige-substrate {
+  display: none;
+}
+
+.skip-to-content {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  z-index: 9999;
+  padding: 4px 16px;
+  background: var(--shout-red);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.skip-to-content:focus {
+  transform: translateX(-50%) translateY(0);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   WORKSPACE SHELL — page grid, masthead, marquee, side rails
+   ════════════════════════════════════════════════════════════════════ */
+
+.retro-app {
+  min-height: 100vh;
+  background: var(--page-edge);
+  color: #000;
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+
+.retro-page {
+  width: min(100vw, 1500px);
+  height: 100vh;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 50px 23px minmax(0, 1fr);
+  overflow: hidden;
+  border-left: 1px solid var(--border-soft);
+  border-right: 1px solid var(--border-soft);
+  background: var(--bg-primary);
+}
+
+/* ── Masthead / brand bar (solid portal nav strip) ──────────────────── */
+.retro-brand-bar--fusion,
+.retro-gen-bar {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  height: 50px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-bottom: 2px solid #103a78;
+  background: linear-gradient(180deg, var(--nav-bar-1), var(--nav-bar-2));
+  color: var(--nav-bar-text);
+}
+
+.retro-gen-bar {
+  display: flex;
+  gap: 10px;
+}
+
+.retro-brand-leds {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.retro-brand-logo--fusion {
+  justify-self: start;
+  display: inline-flex;
+  align-items: baseline;
+  padding: 3px 12px;
+  border: 1px solid #fff;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.retro-brand-logo--fusion b {
+  color: #ffe14d;
+}
+
+.retro-brand-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* primary action bar in the masthead */
+.retro-mast-nav {
+  grid-column: 2 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.retro-mast-nav .retro-button {
+  min-height: 26px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.retro-mast-select {
+  min-height: 26px;
+  max-width: 150px;
+  border: 1px solid #103a78;
+  background: #fff;
+  color: #000;
+  font-size: 12px;
+}
+
+/* generation progress (replaces brand bar while generating) */
+.retro-gen-bar-stage {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.retro-gen-bar-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #ffe14d;
+}
+
+.retro-gen-bar-track {
+  height: 8px;
+  border: 1px solid #103a78;
+  background: #fff;
+  overflow: hidden;
+}
+
+.retro-gen-bar-fill {
+  height: 100%;
+  background: var(--bar-green-2);
+  transition: width 0.3s ease;
+}
+
+.retro-gen-bar-fill--indeterminate {
+  width: 100%;
+  background: linear-gradient(90deg, transparent, var(--title-blue) 50%, transparent);
+  background-size: 200% 100%;
+  animation: gen-bar-scan 1.2s linear infinite;
+}
+
+@keyframes gen-bar-scan {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.retro-gen-bar-preview {
+  font-size: 10px;
+  color: #e8e8e8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Marquee / bulletin strip ───────────────────────────────────────── */
+.retro-marquee--fusion {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  height: 23px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  padding: 2px 8px;
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--highlight-yellow);
+  color: #000;
+  white-space: nowrap;
+}
+
+.retro-marquee--fusion span {
+  color: var(--shout-red);
+  font-weight: 700;
+}
+
+.retro-marquee--fusion b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--link-blue);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.retro-marquee--alert {
+  background: #ffe0e0;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════
+   WEB CONTROLS — beveled buttons, chips, tabs, links, inputs, LEDs
+   ════════════════════════════════════════════════════════════════════ */
+
+.retro-button,
+.terminal-button,
+.mode-card-action {
+  min-height: 22px;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 2px 9px;
+  border: 2px outset #f4f2e7;
+  border-radius: 0;
+  background: var(--bevel-face);
+  color: var(--link-blue);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.15;
+  text-decoration: underline;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.retro-button:hover:not(:disabled),
+.terminal-button:hover:not(:disabled),
+.mode-card-action:hover:not(:disabled) {
+  background: var(--highlight-yellow);
+  color: var(--shout-red);
+}
+
+.retro-button:active:not(:disabled),
+.terminal-button:active:not(:disabled),
+.mode-card-action:active:not(:disabled) {
+  border-style: inset;
+}
+
+.retro-button:disabled,
+.terminal-button:disabled,
+.mode-card-action:disabled {
+  color: var(--bevel-shadow);
+  cursor: default;
+}
+
+.retro-button--primary,
+.terminal-button--primary {
+  background: var(--highlight-yellow);
+  color: var(--shout-red);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.retro-button--blue {
+  background: #dff7ff;
+  color: var(--link-blue);
+  font-weight: 700;
+}
+
+.retro-button--danger,
+.mode-card-action--danger {
+  background: #ffc0c0;
+  color: var(--shout-red);
+}
+
+.retro-link-button {
+  display: block;
+  width: 100%;
+  padding: 5px 8px;
+  border: 0;
+  border-bottom: 1px dotted #b0b000;
+  background: #ffffdf;
+  color: var(--link-blue);
+  font-size: 13px;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.retro-link-button:hover {
+  background: var(--lcd-bg);
+  color: var(--shout-red);
+}
+
+.retro-app input,
+.retro-app textarea,
+.retro-app select {
+  border: 2px inset #f0f0f0;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+
+/* ── LEDs ───────────────────────────────────────────────────────────── */
+.retro-led {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background: #555;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
+}
+
+.retro-led--green { background: var(--led-green); }
+.retro-led--amber { background: var(--led-amber); }
+.retro-led--red { background: var(--led-red); }
+.retro-led--blink { animation: led-blink 1s steps(2, start) infinite; }
+
+@keyframes led-blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.retro-led-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 4px;
+  border: 1px inset #f0f0f0;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.retro-sep-pc98 {
+  display: inline-block;
+  width: 2px;
+  height: 18px;
+  margin: 0 3px;
+  background: var(--bevel-shadow);
+  box-shadow: 1px 0 0 var(--bevel-light);
+  flex-shrink: 0;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   TRIPTYCH — 段落 (read) | JIC (解) | 单词/语法 (记)
+   ════════════════════════════════════════════════════════════════════ */
+
+.retro-triptych {
+  grid-row: 3;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 1fr) minmax(300px, 1.05fr);
+  gap: 6px;
+  padding: 6px;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+.retro-reader-panel,
+.retro-jic-panel,
+.retro-study-col,
+.retro-box,
+.retro-confirm-box {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border-primary);
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+}
+
+.retro-box {
+  display: block;
+  overflow: visible;
+}
+
+/* panel/section title bars — colored gradient strips (Sina/Mop/QQ idiom) */
+.retro-box-title,
+.retro-jic-panel-head {
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 8px;
+  border: 1px solid var(--border-strong);
+  background: linear-gradient(180deg, var(--bar-blue-1), var(--bar-blue-2));
+  color: #fff;
+  font-weight: 700;
+}
+
+.retro-box-title b,
+.retro-jic-panel-head b {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #ffe14d;
+}
+
+.retro-box-title--orange,
+.retro-box-title--yellow {
+  background: linear-gradient(180deg, var(--bar-orange-1), var(--bar-orange-2));
+  color: #5a2a00;
+}
+
+.retro-box-title--orange b,
+.retro-box-title--yellow b {
+  color: #7a1500;
+}
+
+.retro-box-title--lime {
+  background: linear-gradient(180deg, var(--bar-green-1), var(--bar-green-2));
+  color: #14400a;
+}
+
+.retro-box-title--lime b {
+  color: #0a5c00;
+}
+
+.retro-box-title--cyan {
+  background: linear-gradient(180deg, var(--bar-cyan-1), var(--bar-cyan-2));
+  color: #044048;
+}
+
+.retro-box-title--cyan b {
+  color: #00525e;
+}
+
+.retro-reader-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 4px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-panel-raised);
+}
+
+.retro-passage-head {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-panel-raised);
+}
+
+.retro-passage-head h2 {
+  margin: 0;
+  color: #000;
+  font-family: var(--font-serif);
+  font-size: 21px;
+  line-height: 1.3;
+}
+
+.retro-passage-head p {
+  margin: 2px 0 4px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.retro-passage-head div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.retro-passage-head span {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.retro-paragraph-reader {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px;
+  background: #fff;
+}
+
+.retro-sentence {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 7px;
+  width: 100%;
+  margin: 0 0 4px;
+  padding: 5px;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  color: #000;
+  text-align: left;
+  cursor: pointer;
+}
+
+.retro-sentence:hover,
+.retro-sentence.is-active {
+  border-color: var(--link-blue);
+  background: #e8f7ff;
+}
+
+.retro-sentence-index {
+  color: var(--shout-red);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.retro-sentence-text {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.retro-reader-scale-large .retro-sentence-text { font-size: 20px; }
+.retro-reader-density-compact .retro-sentence-text { line-height: 1.35; }
+
+.retro-loading {
+  padding: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.retro-loading-bar {
+  height: 4px;
+  margin-bottom: 6px;
+  border: 1px inset #f0f0f0;
+  background: #fff;
+  overflow: hidden;
+}
+
+.retro-loading-bar::after {
+  content: "";
+  display: block;
+  width: 30%;
+  height: 100%;
+  background: var(--title-blue);
+  animation: retro-seek 1.2s linear infinite;
+}
+
+@keyframes retro-seek {
+  0% { margin-left: -30%; }
+  100% { margin-left: 110%; }
+}
+
+.retro-empty {
+  padding: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.retro-empty--large {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  gap: 10px;
+  background: var(--bg-panel-raised);
+}
+
+.retro-empty strong {
+  color: var(--shout-red);
+  font-family: var(--font-mono);
+  font-size: 22px;
+}
+
+.retro-empty-line {
+  padding: 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ── JIC panel internals ────────────────────────────────────────────── */
+.retro-jic-panel-head {
+  flex: 0 0 auto;
+}
+
+.retro-jic-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px;
+  background: #fff;
+}
+
+.retro-jic-meter {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3px;
+  padding: 4px;
+  background: var(--bg-panel-raised);
+}
+
+.retro-jic-meter-item {
+  padding: 4px;
+  border: 1px solid var(--border-primary);
+  background: #fff;
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+.retro-jic-meter-item span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.retro-jic-meter-item b {
+  display: block;
+  color: var(--link-blue);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.retro-inspector-block {
+  margin-bottom: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--border-primary);
+  background: #f8f8f8;
+}
+
+.retro-inspector-block--callout {
+  background: var(--highlight-yellow);
+  border-color: #808000;
+}
+
+.retro-kanbun-block {
+  background: #f0fff0;
+  border-color: #008000;
+}
+
+.retro-mini-title {
+  margin-bottom: 3px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.retro-original-line {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.retro-jic-code {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.retro-jic-token {
+  padding: 1px 4px;
+  border: 1px solid var(--border-primary);
+  background: #f0f0f0;
+}
+
+.retro-jic-token--operator {
+  background: #e0e0ff;
+  border-color: #8080c0;
+  color: #000080;
+  font-weight: 700;
+}
+
+.retro-jic-token--method {
+  background: #ffe0e0;
+  border-color: #c08080;
+  color: #800000;
+}
+
+.retro-jic-token--variable {
+  background: #fff;
+  color: #000;
+}
+
+.retro-reconstruct-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.retro-reconstruct-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.retro-reconstruct-row span {
+  font-weight: 700;
+}
+
+.retro-reconstruct-row b {
+  padding: 0 3px;
+  border: 1px solid #8080c0;
+  background: #e8e8ff;
+  color: #000080;
+  font-family: var(--font-mono);
+}
+
+.retro-reconstruct-row em {
+  color: var(--text-muted);
+  font-style: normal;
+  font-size: 10px;
+}
+
+.retro-notice-compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 3px 5px;
+}
+
+.retro-notice-compact span {
+  padding: 1px 5px;
+  border: 1px inset #f0f0f0;
+  background: #fff;
+  font-size: 10px;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   STUDY COLUMN — 单词 / 语法 (记)
+   ════════════════════════════════════════════════════════════════════ */
+
+.retro-col-tabs {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  padding: 4px;
+  background: var(--border-soft);
+}
+
+.retro-col-tabs button {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 2px outset #f4f2e7;
+  border-radius: 0;
+  background: var(--bevel-face);
+  color: var(--link-blue);
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.retro-col-tabs button.is-active {
+  border-style: inset;
+  background: var(--highlight-yellow);
+  color: var(--shout-red);
+  font-weight: 700;
+}
+
+.retro-col-tabs span {
+  padding: 0 4px;
+  border: 1px solid #999;
+  background: #fff;
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-decoration: none;
+}
+
+.retro-col-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px;
+  background: #fff;
+}
+
+.retro-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.retro-word-card,
+.retro-grammar-card {
+  padding: 6px 7px;
+  border: 1px solid var(--border-soft);
+  background: var(--bg-panel-raised);
+}
+
+.retro-word-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.retro-word-head b {
+  color: var(--shout-red);
+  font-family: var(--font-serif);
+  font-size: 18px;
+}
+
+.retro-word-head span {
+  color: #008080;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.retro-word-head em {
+  color: var(--text-muted);
+  font-style: normal;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.retro-word-card p,
+.retro-grammar-card p {
+  margin: 3px 0 5px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.retro-grammar-card b {
+  color: #000080;
+  font-family: var(--font-serif);
+  font-size: 16px;
+}
+
+/* ── Confirm dialog ─────────────────────────────────────────────────── */
+.retro-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.retro-confirm-box {
+  width: min(420px, 100%);
+  display: block;
+  overflow: visible;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.35);
+}
+
+.retro-confirm-body {
+  padding: 12px;
+  background: var(--bg-panel-raised);
+  color: #000;
+}
+
+.retro-confirm-body p {
+  margin: 0 0 8px;
+  color: #990000;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.retro-confirm-body strong {
+  display: block;
+  padding: 6px;
+  border: 1px inset #f0f0f0;
+  background: #fff;
+  color: #000080;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.retro-confirm-body small {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.retro-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 8px;
+  border-top: 1px solid var(--border-primary);
+  background: #efefef;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   MODALS / WINDOWS — settings, studio, flashcards, stats, search, etc.
+   ════════════════════════════════════════════════════════════════════ */
+
+.vestige-overlay {
+  background: var(--overlay-bg);
+}
+
+.window-frame,
+.settings-window,
+.shortcuts-panel {
+  position: relative;
+  overflow: hidden;
+  max-width: min(1100px, calc(100vw - 22px));
+  border: 1px solid var(--border-strong);
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.28);
+  font-family: var(--font-serif);
+}
+
+.window-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 26px;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border-strong);
+  background: linear-gradient(180deg, var(--nav-bar-1), var(--nav-bar-2));
+  color: #fff;
+}
+
+.window-content {
+  background: #fff;
+}
+
+.settings-window {
+  height: min(760px, 85vh);
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-content {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 178px minmax(0, 1fr);
+  overflow: hidden;
+  background: #fff;
+}
+
+.settings-sidebar {
+  min-height: 0;
+  padding: 1rem;
+  border-right: 1px solid var(--border-soft);
+  background: var(--bg-panel-raised);
+}
+
+.settings-sidebar-nav {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.85rem;
+}
+
+.settings-sidebar-item {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.55rem 0.7rem;
+  border: 2px outset #f0f0f0;
+  border-radius: 0;
+  background: var(--bevel-face);
+  color: var(--link-blue);
+  font-family: var(--font-serif);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.settings-sidebar-item:hover,
+.settings-sidebar-item.is-active {
+  border-style: inset;
+  background: var(--highlight-yellow);
+  color: var(--shout-red);
+}
+
+.settings-panel {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+/* ── Cards (panels inside modals) ───────────────────────────────────── */
+.vestige-card,
+.vestige-card-interactive,
+.vestige-card-raised,
+.mode-card {
+  border: 1px solid var(--border-primary);
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  box-shadow: 1px 1px 0 #d0d0d0;
+}
+
+.vestige-card-inset {
+  border: 1px solid var(--border-primary);
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+}
+
+.mode-card.is-active {
+  border-color: var(--link-blue);
+  background: #fffbe0;
+}
+
+.mode-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  max-width: 320px;
+}
+
+.mode-card-action {
+  min-height: 26px;
+  font-size: 11px;
+}
+
+/* ── Typography helpers (Tailwind-adjacent custom classes) ──────────── */
+.display-bold {
+  font-family: var(--font-serif);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.editorial-mono {
+  font-family: var(--font-mono);
+}
+
+.tabular-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.micro-mono-soft {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.panel-title {
+  color: var(--shout-red);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-bottom: 0.5rem;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--border-primary);
+  background: #fff;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.status-chip--active,
+.status-chip--startup {
+  border-color: #008000;
+  background: var(--lcd-bg);
+  color: #006000;
+}
+
+.command-key,
+.shortcuts-panel kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 22px;
+  padding: 0 6px;
+  border: 2px outset #f0f0f0;
+  border-radius: 0;
+  background: var(--bevel-face);
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.breathing-text,
+.micro-echo,
+.btn-press {
+  /* motion stripped for the flat portal skin */
+}
+
+/* ── Structural tabs (TransJap library) ─────────────────────────────── */
+.structural-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-panel-raised);
+}
+
+.structural-tab {
+  padding: 0.4rem 0.7rem;
+  border: 2px outset #f0f0f0;
+  border-radius: 0;
+  background: var(--bevel-face);
+  color: var(--link-blue);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.structural-tab:hover,
+.structural-tab.is-active {
+  border-style: inset;
+  background: var(--highlight-yellow);
+  color: var(--shout-red);
+}
+
+.structural-tab-count {
+  margin-left: 5px;
+  padding: 0 3px;
+  border: 1px solid #999;
+  background: #fff;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.transjap-filter-field {
+  min-height: 40px;
+}
+
+.transjap-filter-control {
+  min-height: 34px;
+}
+
+/* ── Shortcuts overlay ──────────────────────────────────────────────── */
+.shortcuts-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--overlay-bg);
+}
+
+.shortcuts-panel {
+  width: 90vw;
+  max-width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   RESPONSIVE — stack the three columns
+   ════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .retro-page {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+
+  .retro-brand-bar--fusion,
+  .retro-gen-bar {
+    height: auto;
+    min-height: 50px;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 6px 10px;
+  }
+
+  .retro-mast-nav {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+
+  .retro-brand-logo--fusion {
+    justify-self: start;
+    font-size: 22px;
+  }
+
+  .retro-triptych {
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(280px, auto);
+    overflow-y: auto;
+  }
+
+  .retro-jic-meter {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .settings-content {
+    grid-template-columns: 1fr;
+  }
+
+  .retro-sentence {
+    grid-template-columns: 1fr;
+  }
+}
+
+

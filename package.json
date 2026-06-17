@@ -2,11 +2,22 @@
   "name": "kanalens",
   "version": "0.1.0",
   "private": true,
+  "main": "electron/main.mjs",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev:next": "next dev --hostname localhost --port 3000",
+    "build": "next build && node scripts/copy-standalone-assets.mjs",
+    "start": "node .next/standalone/server.js",
+    "lint": "eslint",
+    "seed:claude-passages": "node scripts/seed-claude-passages.mjs",
+    "seed:bulk-passages": "node scripts/bulk-seed-passages.mjs",
+    "seed:local-passages": "node scripts/local-seed-passages.mjs",
+    "import:transjap": "npm run import:transjap-corpus && npm run import:transjap-dictionary",
+    "import:transjap-corpus": "node scripts/import-transjap-corpus.mjs",
+    "import:transjap-dictionary": "node scripts/import-transjap-dictionary.mjs",
+    "desktop:dev": "electron electron/main.mjs",
+    "desktop:build": "npm run build",
+    "desktop:dist": "npm run desktop:build && electron-builder --win nsis"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
@@ -24,9 +35,45 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "drizzle-kit": "^0.31.10",
+    "electron": "^37.1.0",
+    "electron-builder": "^26.0.12",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "build": {
+    "appId": "com.kanalens.desktop",
+    "productName": "KanaLens",
+    "electronDist": "node_modules/electron/dist",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "electron/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": ".next/standalone",
+        "to": "standalone",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "extraMetadata": {
+      "main": "electron/main.mjs"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }
