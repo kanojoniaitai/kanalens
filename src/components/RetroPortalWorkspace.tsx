@@ -473,11 +473,11 @@ export default function RetroPortalWorkspace({
           </div>
           <nav className="retro-mast-nav" aria-label="Primary actions">
             <button
-              onClick={needsApiKey ? () => onOpenCorpus() : onGenerate}
-              disabled={!needsApiKey && (!canGenerate || isGenerating)}
+              onClick={onGenerate}
+              disabled={!canGenerate || isGenerating}
               className="retro-button retro-button--primary"
             >
-              {needsApiKey ? "本地语料" : isGenerating ? "生成中" : primaryActionLabel}
+              {isGenerating ? "生成中" : primaryActionLabel}
             </button>
             <button onClick={onPrev} disabled={!canPrev || isLoading} className="retro-button">上一篇</button>
             <button onClick={onNext} disabled={!canNext || isLoading} className="retro-button">下一篇</button>
@@ -522,11 +522,11 @@ export default function RetroPortalWorkspace({
               <strong>NO MEDIA</strong>
               <p>JIC 工作台正在等待一篇文章。</p>
               <button
-                onClick={needsApiKey ? () => onOpenCorpus() : onGenerate}
-                disabled={!needsApiKey && !canGenerate}
+                onClick={onGenerate}
+                disabled={!canGenerate}
                 className="retro-button retro-button--primary"
               >
-                {needsApiKey ? "打开本地语料" : primaryActionLabel}
+                {primaryActionLabel}
               </button>
             </div>
           )}

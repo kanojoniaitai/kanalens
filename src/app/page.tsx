@@ -310,12 +310,9 @@ export default function Home() {
   }, []);
 
   const generateNewPassage = useCallback(async () => {
-  const effectiveKey = apiKey || localStorage.getItem("kanalens_api_key");
-  if (!effectiveKey) {
-  setShowSettings(true);
-  addToast("warning", "Install an API key to power the unit");
-  return;
-  }
+  // 有本地密钥就带上（本地开发用）；没有就不带，让服务端用环境变量
+  // DEEPSEEK_API_KEY 兜底，手机端无需输入任何密钥。
+  const effectiveKey = apiKey || localStorage.getItem("kanalens_api_key") || "";
 
   if (generatingRef.current) return;
   generatingRef.current = true;
@@ -329,7 +326,7 @@ export default function Home() {
   method: "POST",
   headers: {
   "Content-Type": "application/json",
-  "x-api-key": effectiveKey,
+  ...(effectiveKey ? { "x-api-key": effectiveKey } : {}),
   },
   body: JSON.stringify({
   style_template_id: selectedStyleTemplateId,
@@ -855,8 +852,10 @@ export default function Home() {
   }, [generateNewPassage, handlePrev, handleNext, currentPassage, handleStudyTabChange, openTransJapLibrary, setShowFlashcards]);
 
   const primaryActionLabel = generationStatus === "generating" ? "生成中" : passageHistory.length === 0 ? "生成第一篇" : "生成下一篇";
+  // 生成现在不依赖本地密钥：无密钥时服务端用环境变量 DEEPSEEK_API_KEY 兜底。
+  // needsApiKey 仅表示"本机未存密钥"，不再拦截生成。
   const needsApiKey = !apiKey;
-  const canGenerate = !needsApiKey && generationStatus !== "generating";
+  const canGenerate = generationStatus !== "generating";
   const canPrev = currentPassageIndex > 0;
   const canNext = currentPassageIndex < passageHistory.length - 1;
 
